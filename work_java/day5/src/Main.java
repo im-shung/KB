@@ -19,7 +19,6 @@ public class Main {
 	static StringTokenizer st;
 
 	static final int EMPTY = 0;
-	static final int WALL = 1;
 	static final int VIRUS = 2;
 	
 	static int[] DR = { 1, -1, 0, 0 };
@@ -72,7 +71,7 @@ public class Main {
 				int NR = cur.R + DR[i];
 				int NC = cur.C + DC[i];
 				// 4. 갈 수 있는가? -> 맵 벗어나면 x, 방문했다면 x, 빈 칸이 아니면 x
-				if (NR < 1 || NR > N || NC < 1 || NR > M) continue;
+				if (NR < 1 || NC < 1 || NR > N || NC > M) continue;
 				if (VISIT[NR][NC]) continue;
 				if(MAP[NR][NC] != EMPTY) continue;
 				// 5. 체크인
