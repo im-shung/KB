@@ -1,0 +1,10 @@
+package com.itskb.ws01;
+
+public class RandomUtilTest {
+
+	public static void main(String[] args) {
+		System.out.println((int)Math.random());
+
+	}
+
+}

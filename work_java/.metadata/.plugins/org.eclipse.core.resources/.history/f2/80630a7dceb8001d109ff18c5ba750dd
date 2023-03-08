@@ -1,0 +1,35 @@
+import java.io.*;
+import java.util.*;
+
+/*
+ * 정수를 계속 입력을 받다가 0이 입력되면 0을 제외하고 
+ * 이전에 입력된 자료의 수와 합계, 평균을 출력하는 프로그램을 작성하시오. 
+ * (평균은 반올림하여 소수 둘째자리까지 출력한다.)
+ */
+
+public class Main9042 {
+
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer st;
+	static int input;
+
+	public static void main(String[] args) throws IOException {
+
+		while (true) {
+			System.out.print("점수를 입력하세요. ");
+			st = new StringTokenizer(br.readLine());
+			input = Integer.parseInt(st.nextToken());
+
+			if (input < 0 || input > 100)
+				break;
+			
+			if (input >= 80) {
+				System.out.println("축하합니다. 합격입니다.");
+			} else {
+				System.out.println("죄송합니다. 불합격입니다.");
+			}
+		}
+
+	}
+
+}

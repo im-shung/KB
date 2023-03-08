@@ -1,0 +1,83 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static int N, M;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception, IOException {
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		M = Integer.parseInt(br.readLine());
+
+		long pro1 = pro1();
+		if (pro1 > 0) { // 양수가 리턴되면 모든 요청이 배정될 수 있다.
+			System.out.println(pro1);
+		} else { // 아니라면 예산 금액을 초과하는 경우니자.
+			System.out.println(pro2());
+		}
+
+	}
+
+	public static int pro1() {
+		long sum = 0;
+		int max = 0;
+		for (int i = 0; i < N; i++) {
+			max = Math.max(arr[i], max);
+			sum += arr[i];
+		}
+
+		if (sum <= M)
+			return max;
+		else
+			return -1;
+	}
+
+	public static long pro2() {
+		long left = N;
+		long right = M;
+		long answer = 0; // 정수상한액
+
+		while (left < right) {
+			long mid = (left + right) / 2;
+			
+			// sum := 정수상한액이 mid일 때 총 예산
+			long sum = getSum(mid);
+			System.out.println(left + ", " + right + ", " + mid + ", " + sum);
+
+			// 총 예산을 넘는다. right 범위를 내린다.
+			if (sum > M) {
+				right = mid;
+			}
+			// 총 예산을 넘지 않는다. left 범위를 올린다.
+			else if (sum < M) {
+				answer = mid;
+				left = mid;
+			}
+			// 총 예산
+			else {
+				answer = mid;
+				break;
+			}
+		}
+		return answer;
+	}
+
+	public static long getSum(long bound) {
+		long sum = 0;
+		for (int val : arr) {
+			if (val > bound)
+				sum += bound;
+			else
+				sum += val;
+		}
+		return sum;
+	}
+}

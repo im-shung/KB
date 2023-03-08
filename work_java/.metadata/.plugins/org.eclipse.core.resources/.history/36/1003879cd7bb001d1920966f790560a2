@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+	static StringBuilder sb = new StringBuilder();
+	static int res,len;
+	static boolean[] visit;
+	
+    public int solution(String begin, String target, String[] words) {
+    	len = begin.length();
+    	char[] chArray = begin.toCharArray();
+    	
+    	visit = new boolean[len];
+    	
+    	dfs(0, chArray, target, 1);
+        int answer = 0;
+        return answer;
+    }
+    
+    public int dfs(int idx, char[] chArray, String target, int cnt) {
+    	// 1. 체크인
+    	visit[idx] = true;
+    	// 2. 목적지인가?
+    	if (idx == len) {
+    		if (sb.toString() == target) {
+    			res = Math.min(res, cnt);
+    		}
+    	}
+    	// 3. 연결된 곳인가?
+    	for (char c = 'a'; c <= 'z'; c++) {
+			// 4. 갈 수 있는가?
+    		if (chArray[idx] != c) {
+    			chArray[idx] = c;
+    			// 5. 간다
+    			dfs(idx + 1, chArray, target, cnt + 1);
+    	    	// 6. 체크아웃
+    		}
+    	}
+
+    	return 0;
+    }
+}

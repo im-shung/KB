@@ -1,0 +1,62 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static int N, M;
+	static int[] arr;
+	
+	
+	public static void main(String[] args) throws Exception, IOException {
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		M = Integer.parseInt(br.readLine());	
+		
+		System.out.println(process());
+	}
+	
+	public static long process() {
+		int sum = 0;
+		int max = 0;
+		for (int i = 0; i < N; i++) {
+			max = Math.max(arr[i], max);
+			sum += arr[i];
+		}
+		
+		if (sum < M) {
+			return max;
+		}
+		 
+		long left = N;
+		long right = M;
+		long answer = 0;
+		while (left < right) {
+			long mid = (left + right) / 2; // 정수상한액
+			sum = 0;
+			for (int i = 0; i < N; i++) {
+				if (arr[i] > mid) sum += mid;
+				else sum += arr[i];
+			}
+			System.out.println(left + ", " + right + ", " + mid +", " + sum);
+			
+			// 기준: 총 예산
+			if (sum > M) {
+				right = mid - 1;
+			} else if (sum < M){
+				answer = Math.max(answer, mid);
+				left = mid + 1;
+			} else {
+				answer = mid;
+				break;
+			}
+		}
+		return answer;
+	}
+
+}

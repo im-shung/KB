@@ -1,0 +1,136 @@
+import java.io.*;
+import java.util.*;
+
+class Node {
+	int r;
+	int c;
+
+	public Node(int r, int c) {
+		super();
+		this.r = r;
+		this.c = c;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Node [r=").append(r).append(", c=").append(c).append("]");
+		return builder.toString();
+	}
+
+}
+
+public class Main {
+
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer st;
+
+	static int[] DR = { 1, -1, 0, 0 };
+	static int[] DC = { 0, 0, 1, -1 };
+
+	static int N, M;
+	static int[][] map, blank;
+	static boolean[][] visit;
+	static int ans;
+	static int BLANK_COUNT;
+
+	static void input() {
+		st = new StringTokenizer(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		map = new int[N][M];
+		visit = new boolean[N][M];
+		
+		for (int r = 0; r < N; r++) {
+			st = new StringTokenizer(st.nextToken());
+			for (int c = 0; c < N; c++) {
+				map[r][c] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+	
+	// 바이러스 퍼뜨리기!!
+	public static void bfs() {
+		Deque<Node> que = new ArrayDeque<>();
+
+		// 모든 바이러스가 시작점으로 가능하니까, 전부 큐에 넣어준다.
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < M; c++) {
+				visit[r][c] = false;
+				if (map[r][c] == 2) {
+					que.add(new Node(r, c));
+					visit[r][c] = true;
+				}
+			}
+		}
+	
+		// BFS 과정
+		while (!que.isEmpty()) {
+			// 1. 큐에서 꺼냄
+			Node cur = que.poll();
+			// 2. 목적지인가?
+			// 3. 연결된 곳인가?
+			for (int i = 0; i < 4; i++) {
+				int dr = cur.r + DR[i];
+				int dc = cur.c + DC[i];
+				// 4. 갈 수 있는가? -> 맵 벗어나면 x, 방문했다면 x, 빈 칸이 아니면 x
+				if (dr < 0 || dr > N || dc < 0 || dc > M) continue;
+				if (visit[dr][dc]) continue;
+				if (map[dr][dc] != 0) continue;
+				// 5. 체크인
+				visit[dr][dc] = true;
+				// 6. 큐에 넣음
+				que.add(new Node(dr, dc));
+
+			}
+		}
+		
+		// 탐색이 종료된 시점이니, 안전 영역의 넓이를 계산하고, 정답을 갱신한다.
+		int count = 0;
+		for (int r = 0; r < N; r++) for (int c = 0; c < M; c++) if (map[r][c] == 0) count++;
+		ans = Math.max(ans, count);
+	}
+	
+	// idx 번째 빈 칸에 벽을 세울 지 말 지 결정해야 하고, 이 전까지 selected_cnt 개의 벽을 세웠따.
+	static void dfs(int idx, int selected_cnt) {
+		if (selected_cnt == 3) { // 3 개의 벽을 모두 세운 상태
+			bfs();
+			return;
+		}
+		
+		if (idx > BLANK_COUNT) return; // 더 이상 세울 수 있는 벽이 없는 상태
+		
+		map[blank[idx][0]][blank[idx][1]] = 1;
+		dfs(idx + 1, selected_cnt + 1);
+		
+		map[blank[idx][0]][blank[idx][1]] = 0;
+		dfs(idx + 1, selected_cnt);
+		
+	}
+	
+	public static void pro() {
+		// 모든 벽의 위치를 먼저 모아놓자.
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < N; c++) {
+				if (map[r][c] == 0) {
+					BLANK_COUNT++;
+					blank[BLANK_COUNT][0] = r;
+					blank[BLANK_COUNT][1] = c;
+				}
+			}
+		}
+		
+		// 벽을 3개 세우는 모든 방법을 확인해보자!
+		dfs(0,0);
+	}
+	
+	public static void main(String[] args) {
+		/* 입력 */
+		input();
+		/* 처리 */
+		pro();
+		/* 출력 */
+		System.out.println(ans);
+	}
+}

@@ -1,0 +1,24 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer st;
+	static StringBuilder sb = new StringBuilder();
+		
+	public static void main(String[] args) throws IOException {
+		int N = Integer.parseInt(br.readLine());
+		st = new StringTokenizer(br.readLine());
+		int min = Integer.MIN_VALUE;
+		int max = Integer.MAX_VALUE;
+		for (int i = 0; i < N; i++) {
+			int val = Integer.parseInt(st.nextToken());
+			if (min < val) {
+				min = val;
+			} else if (max > val) {
+				max = val;
+			}
+		}
+		System.out.println(min + " " + max);
+	}
+}

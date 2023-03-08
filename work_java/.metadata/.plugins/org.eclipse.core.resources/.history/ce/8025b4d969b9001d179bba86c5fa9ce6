@@ -1,0 +1,15 @@
+package com.kb.sms;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// 사용1
+		Student s = new Student();
+		s.num = 1001;
+		s.name = "kim";
+		s.study();
+		s.work(2);
+
+	}
+
+}

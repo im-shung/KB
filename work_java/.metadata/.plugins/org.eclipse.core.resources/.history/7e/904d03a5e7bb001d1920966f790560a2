@@ -1,0 +1,29 @@
+package com.itskb.ws03.dto;
+
+public class AccountDto {
+
+	private int accountSeq;
+	private String accountNumber;
+	private int balance;
+	private int userSeq;
+
+	public AccountDto() {
+
+	}
+
+	public AccountDto(int accountSeq, String accountNumber, int balance, int userSeq) {
+		this.accountSeq = accountSeq;
+		this.accountNumber = accountNumber;
+		this.balance = balance;
+		this.userSeq = userSeq;
+	}
+
+	public int getUserSeq() {
+		return userSeq;
+	}
+
+	public String toString() {
+		return "계좌 일련번호 : " + accountSeq + ", 번호 : " + accountNumber + ", 잔고 : " + balance + ", 고객 일련번호 : " + userSeq;
+	}
+
+}

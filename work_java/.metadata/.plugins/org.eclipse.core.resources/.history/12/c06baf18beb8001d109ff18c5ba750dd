@@ -1,0 +1,30 @@
+package day1;
+
+public class IfTest {
+
+	public static void main(String[] args) {
+		int score = 77;
+		// if 1
+		if (score > 70) {
+			// 조건이 만족할 때 수행할 문장
+			System.out.println("~~~합격~~~");
+		}
+		// if 2
+		if (score > 70) {
+			System.out.println("~~~합격~~~");
+		} else {
+			System.out.println("~~~불합격~~~");
+		}
+		
+		// if 3
+		if (score > 90) {
+			System.out.println("A 학점");
+		} else if (score > 80) {
+			System.out.println("B 학점");
+		} else {
+			System.out.println("C 학점");
+		}
+		
+	}
+
+}

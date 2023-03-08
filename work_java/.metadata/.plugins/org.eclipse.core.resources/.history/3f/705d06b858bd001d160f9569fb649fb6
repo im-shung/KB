@@ -1,0 +1,10 @@
+package kb.cms;
+
+public class Customer {
+
+	int num;
+	String name;
+	String address;
+	
+	
+}

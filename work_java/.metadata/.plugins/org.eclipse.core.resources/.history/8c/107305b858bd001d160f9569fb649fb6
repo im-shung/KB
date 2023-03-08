@@ -1,0 +1,104 @@
+import java.io.*;
+import java.util.*;
+
+/*
+ 	완전탐색 + BFS
+ 	
+ 	1. 완전 탐색으로 벽 3개를 세워본다.
+ 	2. BFS로 0의 개수를 센다. 
+ 	3. 0의 개수의 최대값을 저장한다.
+ */
+
+class Node {
+	int r;
+	int c;
+
+	public Node(int r, int c) {
+		super();
+		this.r = r;
+		this.c = c;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Node [r=").append(r).append(", c=").append(c).append("]");
+		return builder.toString();
+	}
+
+}
+
+public class Main {
+
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer st;
+
+	static int[] DR = { 1, -1, 0, 0 };
+	static int[] DC = { 0, 0, 1, -1 };
+
+	static int N, M;
+	static int[][] map;
+
+	public static void main(String[] args) {
+		/* 입력 */
+		st = new StringTokenizer(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		for (int r = 0; r < N; r++) {
+			st = new StringTokenizer(st.nextToken());
+			for (int c = 0; c < N; c++) {
+				map[r][c] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		/* 처리1. 완전 탐색으로 벽 3개를 세워본다. */
+		int wallCount = 0;
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < N; c++) {
+				if (map[r][c] )
+				/* 처리2. BFS로 0의 개수를 센다.  */
+				int zeroCount = bfs();	
+			}
+		}
+
+		/* 출력 */
+
+	}
+
+	// map의 빈 칸의 개수를 세는 메서드
+	public static int bfs(ArrayDeque<Node> block) {
+		Deque<Node> que = new ArrayDeque<>();
+		boolean[][] visit = new boolean[N][M];
+
+
+		que.add(new Node(0, 0));
+		visit[0][0] = true;
+
+		while (!que.isEmpty()) {
+			// 1. 큐에서 꺼냄
+			Node cur = que.poll();
+			// 2. 목적지인가?
+			// 3. 연결된 곳인가?
+			for (int i = 0; i < 4; i++) {
+				int dr = cur.r + DR[i];
+				int dc = cur.c + DC[i];
+
+				// 4. 갈 수 있는가? -> 맵 벗어나면 x, 방문했다면 x, 
+				if (dr < 0 || dr > N || dc < 0 || dc > M || visit[dr][dc])
+					continue;
+				// 4. 갈 수 있는가? -> 벽 x, 가스 x
+				if (map[dr][dc] == 2 || map[dr][dc] == 1)
+					continue;
+
+				// 5. 체크인
+				visit[dr][dc] = true;
+				// 6. 큐에 넣음
+				que.add(new Node(dr, dc));
+
+			}
+		}
+		int count = 0;
+		return count;
+	}
+}

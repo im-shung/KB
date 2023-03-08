@@ -1,0 +1,16 @@
+package day1;
+
+public class IfTest {
+
+	public static void main(String[] args) {
+		int score = 77;
+		// if 1
+		if (score > 70) {
+			// 조건이 만족할 때 수행할 문장
+			System.out.println("~~~합격~~~");
+		}
+		
+		
+	}
+
+}

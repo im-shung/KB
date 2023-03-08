@@ -1,0 +1,12 @@
+package kb.cms;
+
+public class Test {
+
+	public static void main(String[] args) {
+		ICustMgr mgr = new CustManager();
+		mgr.save(new Customer(1001, "kim", "seoul"));
+		mgr.search();
+
+	}
+
+}
