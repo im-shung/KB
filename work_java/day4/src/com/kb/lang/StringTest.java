@@ -14,6 +14,7 @@ public class StringTest {
 		System.out.println(s5.trim());
 		System.out.println(ch + 1);
 		System.out.println(++ch);
+		System.out.println(ch++);
 		System.out.println(s2 + 10 +30);
 		System.out.println(10 +30 + s2);
 		System.out.println(s.substring(3,8));

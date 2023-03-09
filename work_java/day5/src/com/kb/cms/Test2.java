@@ -1,4 +1,4 @@
-package kb.cms;
+package com.kb.cms;
 
 import java.util.*;
 
