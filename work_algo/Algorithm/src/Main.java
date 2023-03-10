@@ -1,18 +1,20 @@
 import java.io.*;
 import java.util.*;
 
-class Node {
-	int x; // row
-	int y; // column
+class Student {
 
-	public Node(int x, int y) {
-		this.x = x;
-		this.y = y;
+	int type;
+	int num;
+
+	public Student(int type, int num) {
+		super();
+		this.type = type;
+		this.num = num;
 	}
 
 	@Override
 	public String toString() {
-		return "Node [x=" + x + ", y=" + y + "]";
+		return "Student [type=" + type + ", num=" + num + "]";
 	}
 
 }
@@ -21,157 +23,72 @@ public class Main {
 
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
+	static StringBuilder sb = new StringBuilder();
 
-	static int[][] D = { { -1, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 } };
-
-	static final int BLANK = 0;
-	static final int CAMP = 1;
-	static final int CLOSE = 2;
-
-	static Node[] persons;
-	static Node[] px;
-
-	static int[][] map; // map := 빈칸, 편의점, 베이스캠프 폐쇄 체크용
-	static int[][] step; // step := 최단 거리 기록용
-	static boolean[][] visit;
-
-	static int N, M, t, end;
+	static int N; // 스위치개수
+	static int M; // 학생수
+	static int[] S; // 스위치상태 체크용
+	static Student[] stu;
 
 	static void input() throws IOException {
+		br = new BufferedReader(new FileReader("src/input.txt"));
+		N = Integer.parseInt(br.readLine());
+		S = new int[N + 1];
 		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		map = step = new int[N][N];
-		visit = new boolean[N][N];
-		for (int x = 0; x < N; x++) {
-			st = new StringTokenizer(br.readLine());
-			for (int y = 0; y < N; y++) {
-				map[x][y] = Integer.parseInt(st.nextToken());
-			}
+		for (int i = 1; i <= N; i++) {
+			S[i] = Integer.parseInt(st.nextToken());
 		}
-		px = new Node[M];
-		persons = new Node[M];
+		M = Integer.parseInt(br.readLine());
+
+		stu = new Student[M];
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken()) - 1;
-			int y = Integer.parseInt(st.nextToken()) - 1;
-			px[i] = new Node(x, y);
+			stu[i] = new Student(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
 		}
-	}
-
-	public static void printMap(int[][] map) {
-		System.out.println("======================");
-		for (int x = 0; x < N; x++) {
-			for (int y = 0; y < N; y++) {
-				System.out.print(map[x][y] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("======================");
-	}
-
-	public static boolean cannotGo(int dx, int dy) {
-		return (dx < 0 || dy < 0 || dx >= N || dy >= N);
-	}
-
-	// 편의점이 시작점!! 완전 탐색!!
-	public static void bfs(Node start) {
-		Deque<Node> que = new ArrayDeque<>();
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				visit[i][j] = false;
-				step[i][j] = 0;
-			}
-		}
-		que.add(start);
-		visit[start.x][start.y] = true;
-		while (!que.isEmpty()) {
-			Node cur = que.poll();
-			for (int i = 0; i < 4; i++) {
-				int dx = cur.x + D[i][0];
-				int dy = cur.y + D[i][1];
-				// 갈 수 있는가? -> map 외부 x, 이미방문 x, 폐쇄된 편의점 x, 폐쇄된 베이스캠프 x
-				if (cannotGo(dx, dy))
-					continue;
-				if (visit[dx][dy] || map[dx][dy] != BLANK)
-					continue;
-				// 체크인
-				visit[dx][dy] = true;
-				step[dx][dy] = step[cur.x][cur.y] + 1;
-				que.add(new Node(dx, dy));
-			}
-		}
-	}
-
-	static void move(int num) {
-		Node dest = px[num];
-		int min = N * N + 2;
-		int nx = 0, ny = 0;
-		// 거리가 최소인 방향으로 이동한다. 방향우선순위는 북(-1,0) 서(0,-1) 동(0,1) 남(1,0) 순이다.
-		for (int i = 0; i < 4; i++) {
-			int dx = persons[num].x + D[i][0];
-			int dy = persons[num].y + D[i][1];
-			if (cannotGo(dx, dy))
-				continue;
-			if (map[dx][dy] != BLANK)
-				continue;
-			// 편의점에 도달하면, 편의점은 폐쇄되고, end카운트를 증가한다.
-			if (dx == dest.x && dy == dest.y) {
-				map[dx][dy] = CLOSE;
-				end++;
-				persons[num] = null;
-				return;
-			}
-			if (min > step[dx][dy]) {
-				min = step[dx][dy];
-				nx = dx;
-				ny = dy;
-			}
-		}
-		persons[num].x = nx;
-		persons[num].y = ny;
 	}
 
 	public static void pro() {
-		while (true) {
-			// 격자 안에 사람이 있는가? -> que 에 있는 사람들을 1칸 이동시키자.
-			for (int i = 0; i < M; i++) {
-				System.out.println(persons[i]);
-				if (persons[i] == null)
-					continue;
+		// 스위치 번호는 1~n
+		// 스위치 상태 '0' : 꺼져있음
+		// 스위치 상태 '1' : 켜져있음
 
-				bfs(px[i]);
+		// 학생 m명을 뽑아 1 <= num <= n 인 자연수를 나눠줌
+		// 학생은 스위치조작을 한다.
 
-				// 상하좌우 중 어디로 이동할 것인가? -> 최단거리로 갈 수 있는 방향
-				move(i);
-			}
+		// 남학생: 스위치번호가 num의 배수이면, 스위치상태를 바꾼다.
+		// 여학생: 번호가 num인 스위치를 중심으로 "좌우가 대칭"인 가장 많은 스위치를 포함하는 구간을 찾아, 그 구간의 스위치상태를 바꾼다.
 
-			if (end >= M)
-				break;
-			
-			// t번째사람을 격자 안에 넣자.
-			// 편의점과 가까운 베이스캠프를 찾자.
-			if (t < M) {
-				bfs(px[t]);
-				System.out.println(Arrays.deepToString(step));
-				System.out.println(Arrays.deepToString(map));
-
-				int minDest = N * N + 2;
-				int nx = 0, ny = 0;
-				for (int x = 0; x < N; x++) { // 열과 행이 작은 순
-					for (int y = 0; y < N; y++) {
-						if (map[x][y] == CAMP && minDest > step[x][y]) {
-							minDest = step[x][y];
-							nx = x;
-							ny = y;
-						}
+		/* 상태를 바꿀 스위치번호를 찾는다. */
+		for (Student s : stu) {
+			int num = s.num; // 학생이 받은 스위치번호
+			if (s.type == 1) { // 남학생
+				for (int i = 1; i <= N; i++) {
+					// 배수인가??
+					if (i % num == 0) {
+						change(i);
 					}
 				}
-				persons[t] = new Node(nx, ny);
+			} else if (s.type == 2) { // 여학생
+
+				/* 특정 스위치를 중심으로 "좌우가 대칭"인 가장 긴 구간을 찾는다. */
+				change(num);
+				int l = num - 1;
+				int r = num + 1;
+				while (true) {
+					if (l < 1 || r > N)
+						break;
+					if (S[l] == S[r]) {
+						change(l); change(r);
+						l--;
+						r++;
+					}
+				}
 			}
-			t++;
-			System.out.println(Arrays.toString(persons));
 		}
+	}
+	
+	public static void change(int x) {
+		S[x] = (S[x] == 0) ? 1 : 0;
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -180,6 +97,20 @@ public class Main {
 		/* 처리 */
 		pro();
 		/* 출력 */
-		System.out.println(t++);
+		int start = 1;
+		while (true) {
+			if (N <= 20) {
+				for (int i = start; i < start + N; i++) {
+					sb.append(S[i]).append(" ");
+				}
+				break;
+			} else {
+				for (int i = 1; i < start + 20; i++) {
+					sb.append(S[i]).append(" ");
+				}
+				N -= 20;
+			}
+		}
+		System.out.println(sb);
 	}
 }
