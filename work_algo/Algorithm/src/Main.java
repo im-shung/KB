@@ -1,48 +1,83 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
+
+	static class Node {
+		int y;
+		int x;
+		int cnt;
+
+		public Node(int y, int x, int cnt) {
+			super();
+			this.y = y;
+			this.x = x;
+			this.cnt = cnt;
+		}
+
+	}
 
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
 	static StringBuilder sb = new StringBuilder();
 
-	static int a, b, c, d, e, f;
-	static int ans = 1_000_999;
+	static int[] primeNumbers = { 2, 3, 5, 7 };
 
-	static void input() throws IOException {
-		br = new BufferedReader(new FileReader("src/input.txt"));
-		st = new StringTokenizer(br.readLine());
-		a = Integer.parseInt(st.nextToken());
-		b = Integer.parseInt(st.nextToken());
-		c = Integer.parseInt(st.nextToken());
-		d = Integer.parseInt(st.nextToken());
-		e = Integer.parseInt(st.nextToken());
-		f = Integer.parseInt(st.nextToken());
-	}
-
-	public static void pro() throws Exception {
-		long cf = c + f;
-		long ad = a + d;
-		long be = b + e;
-		for (int i = -999; i <= 999; i++) {
-			for (int j = -999; j <= 999; j++) {
-				if (cf == (ad * i + be * j))
-				{
-					System.out.println(i + " " + j);
-					break;
-				}
-			}
-		}
-	}
+	static int N;
+	static int[] answer;
+	static boolean[][] visit;
 
 	public static void main(String[] args) throws Exception {
 		/* 입력 */
-		input();
+		N = Integer.parseInt(br.readLine());
+		answer = new int[N];
+		visit = new boolean[N][4];
 		/* 처리 */
-		pro();
+		find(0);
+
 		/* 출력 */
-		System.out.println(ans == 1_000_999 ? 0 : ans);
-		br.close();
+		System.out.println(sb);
 	}
+
+	private static void find(int cnt) {
+		System.out.println(Arrays.deepToString(visit) + "\n");
+		System.out.println("answer = " + Arrays.toString(answer));
+		
+		if (cnt == N) {
+			int su = N - 1;
+			int num = answer[N - 1];
+			while (su-- >= 0) {
+				num = (N-su) * 10 + num;
+				System.out.println("su = " + su);
+				if (!isPrimeNumber(num)) break;
+			}
+			if (su == 0) {
+				for (int i = 0; i < N; i++)
+					sb.append(answer[i]);
+				sb.append("\n");
+				
+			}
+			return; // 까먹지 말기!!!!! 
+		}
+		
+		for (int i = 0; i < 4; i++) {
+			if (!visit[cnt][i]) {
+				visit[cnt][i] = true;
+				answer[cnt] = primeNumbers[i];
+				find(cnt + 1);
+				visit[cnt][i] = false;
+			}
+		}
+	}
+	
+	private static boolean isPrimeNumber(int x) {
+		for (int n = 2; n < x; n++) {
+			if (x % n == 0) return false;
+		}
+		return true;
+	}
+
 }
