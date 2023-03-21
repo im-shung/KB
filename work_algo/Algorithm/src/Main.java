@@ -6,78 +6,68 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	static class Node {
-		int y;
-		int x;
-		int cnt;
-
-		public Node(int y, int x, int cnt) {
-			super();
-			this.y = y;
-			this.x = x;
-			this.cnt = cnt;
-		}
-
-	}
-
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
 	static StringBuilder sb = new StringBuilder();
 
-	static int[] primeNumbers = { 2, 3, 5, 7 };
-
-	static int N;
-	static int[] answer;
-	static boolean[][] visit;
+	static int T, N, M;
+	static String X, Y;
+	static int[] board;
 
 	public static void main(String[] args) throws Exception {
+		br = new BufferedReader(new FileReader("src/input.txt"));
+
 		/* 입력 */
-		N = Integer.parseInt(br.readLine());
-		answer = new int[N];
-		visit = new boolean[N][4];
-		/* 처리 */
-		find(0);
+		T = Integer.parseInt(br.readLine());
+		while (--T >= 0) {
+			int ans = 0;
+			st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			X = "";
+			Y = "";
+			// String : X
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < M; i++) {
+				X = String.valueOf(X + +Integer.parseInt(st.nextToken()));
+			}
+			// String : Y
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < M; i++) {
+				Y = String.valueOf(Y + +Integer.parseInt(st.nextToken()));
+			}
+//            System.out.println("x = " + X);
+//            System.out.println("y = " + Y);
+			board = new int[N];
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < N; i++) {
+				board[i] = Integer.parseInt(st.nextToken());
+			}
 
-		/* 출력 */
-		System.out.println(sb);
-	}
-
-	private static void find(int cnt) {
-		System.out.println(Arrays.deepToString(visit) + "\n");
-		System.out.println("answer = " + Arrays.toString(answer));
+			/* 처리 */
+			String startValue = "";
+			int end = M - 1;
+			for (int i = 0; i <= end; i++) {
+				startValue = String.valueOf(startValue + board[i]);
+			}
+			if (isPossible(startValue))
+				ans++;
+			
+			int len = N;
+			while (--len > 0) {
+				end = (end + 1) % N;
+				startValue = String.valueOf(startValue.substring(1) + board[end]);
+				if (isPossible(startValue))
+					ans++;
+			}
 		
-		if (cnt == N) {
-			int su = N - 1;
-			int num = answer[N - 1];
-			while (su-- >= 0) {
-				num = (N-su) * 10 + num;
-				System.out.println("su = " + su);
-				if (!isPrimeNumber(num)) break;
-			}
-			if (su == 0) {
-				for (int i = 0; i < N; i++)
-					sb.append(answer[i]);
-				sb.append("\n");
-				
-			}
-			return; // 까먹지 말기!!!!! 
-		}
-		
-		for (int i = 0; i < 4; i++) {
-			if (!visit[cnt][i]) {
-				visit[cnt][i] = true;
-				answer[cnt] = primeNumbers[i];
-				find(cnt + 1);
-				visit[cnt][i] = false;
-			}
+			/* 출력 */
+			System.out.println(ans);
 		}
 	}
 	
-	private static boolean isPrimeNumber(int x) {
-		for (int n = 2; n < x; n++) {
-			if (x % n == 0) return false;
-		}
-		return true;
+	private static boolean isPossible(String Z) {
+		int z = Integer.parseInt(Z);
+		return Integer.parseInt(X) <= z && z <= Integer.parseInt(Y);
 	}
-
 }
