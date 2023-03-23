@@ -8,60 +8,72 @@ public class BOJ_1325_임서영 {
 	static StringTokenizer st;
 	static StringBuilder sb = new StringBuilder();
 
+	static int[][] DIR = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -0 } };
+	static final int WALL = 1;
+	static final int EMPTY = 0;
+
 	static int N, M;
-	static ArrayList<Integer>[] adjList;
+	static ArrayList<Integer>[] adj;
 	static boolean[] visit;
-	static int[] count, outDegree;
+	static int max = -1;
+	static int[] cnt;
 
-	static int max;
-
-	public static void main(String[] args) throws Exception {
-		br = new BufferedReader(new FileReader("src/input.txt"));
+	private static void input() throws IOException {
 		st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-
-		adjList = new ArrayList[N + 1];
-		visit = new boolean[N + 1];
-		count = new int[N + 1];
-		outDegree = new int[N + 1];
-
+//		visit = new boolean[N + 1];
+		cnt = new int[N + 1];
+		adj = new ArrayList[N + 1];
 		for (int i = 1; i <= N; i++) {
-			adjList[i] = new ArrayList<>();
+			adj[i] = new ArrayList<>();
 		}
-
+		
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
-			int A = Integer.parseInt(st.nextToken());
-			int B = Integer.parseInt(st.nextToken());
-			adjList[B].add(A);
-			if (A != B) {
-				outDegree[B]++;
-			}
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			adj[b].add(a);
 		}
-		
-		System.out.println(Arrays.toString(adjList));
-		
-		for (int i = 1; i <= N; i++) {
-			if (outDegree[i] == 0) {
-				// 시작 정점 : outDegree가 0인 노드
-				// 노드 i를 택할 때, 더 갈 수 없는 경우 outDegree가 0이다.
-				DFS(i); 
-			}
-		}
-		System.out.println(Arrays.toString(count));
 	}
 
-	// adjList[A] -> [B_1, B_2, .. ]
-	// 정점 B를 택하면 정점 A를 택할 수 있다. 
-	// 가장 많은 A를 택할 수 있는 B를 구하라
-	private static void DFS(int in) {
-		System.out.print(in);
-		for (int out : adjList[in]) {
-			count[out]++;
-			outDegree[out]--;
-			DFS(out);
+	private static void pro() {
+		for (int startNode = 1; startNode <= N; startNode++) {
+			visit = new boolean[N + 1];
+			dfs(startNode, startNode);
+			max = Math.max(max, cnt[startNode]);
+			System.out.println();
 		}
+		
+		for (int i = 1; i <= N; i++) {
+			if (cnt[i] == max) {
+				sb.append(i).append(" ");
+			}
+		}
+	}
+	
+	private static void dfs(int startNode, int node) {
+		System.out.printf("dfs(%d, %d)\n",startNode, node);
+		for (int adjNode : adj[node]) {
+			System.out.println("adjNode = " + adjNode);
+			System.out.println(Arrays.toString(visit));
+			if (!visit[adjNode]) {
+				visit[adjNode] = true;
+				cnt[startNode]++;
+				dfs(startNode, adjNode);
+				visit[adjNode] = false;
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		br = new BufferedReader(new FileReader("src/input.txt"));
+		/* 입력 */
+		input();
+		/* 처리 */
+		pro();
+		/* 출력 */
+		System.out.println(sb);
 	}
 
 }

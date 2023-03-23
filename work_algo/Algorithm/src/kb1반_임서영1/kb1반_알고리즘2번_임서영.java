@@ -1,4 +1,4 @@
-package kb1반_임서영;
+package kb1반_임서영1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
