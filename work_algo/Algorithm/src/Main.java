@@ -1,73 +1,55 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
-import java.util.StringTokenizer;
 
 public class Main {
 
+	static class Edge {
+		int start;
+		int from;
+
+		public Edge(int start, int from) {
+			super();
+			this.start = start;
+			this.from = from;
+		}
+
+	}
+
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
-	static StringBuilder sb = new StringBuilder();
+	static StringBuilder sb;
 
-	static int T, N, M;
-	static String X, Y;
-	static int[] board;
+	static int N;
+	static List<Edge> edgeList;
+	static int ans;
+
+	private static void input() throws IOException {
+
+		N = Integer.parseInt(br.readLine());
+		edgeList = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int op = Integer.parseInt(st.nextToken());
+			int start = Integer.parseInt(st.nextToken());
+			int from = Integer.parseInt(st.nextToken());
+			if (op == 1) {
+				edgeList.add(new Edge(start, from));
+			}
+		}
+	}
+
+	private static void pro() {
+		for (int )
+	}
 
 	public static void main(String[] args) throws Exception {
 		br = new BufferedReader(new FileReader("src/input.txt"));
-
 		/* 입력 */
-		T = Integer.parseInt(br.readLine());
-		while (--T >= 0) {
-			int ans = 0;
-			st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken());
-			M = Integer.parseInt(st.nextToken());
-			X = "";
-			Y = "";
-			// String : X
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < M; i++) {
-				X = String.valueOf(X + +Integer.parseInt(st.nextToken()));
-			}
-			// String : Y
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < M; i++) {
-				Y = String.valueOf(Y + +Integer.parseInt(st.nextToken()));
-			}
-//            System.out.println("x = " + X);
-//            System.out.println("y = " + Y);
-			board = new int[N];
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < N; i++) {
-				board[i] = Integer.parseInt(st.nextToken());
-			}
-
-			/* 처리 */
-			String startValue = "";
-			int end = M - 1;
-			for (int i = 0; i <= end; i++) {
-				startValue = String.valueOf(startValue + board[i]);
-			}
-			if (isPossible(startValue))
-				ans++;
-			
-			int len = N;
-			while (--len > 0) {
-				end = (end + 1) % N;
-				startValue = String.valueOf(startValue.substring(1) + board[end]);
-				if (isPossible(startValue))
-					ans++;
-			}
-		
-			/* 출력 */
-			System.out.println(ans);
-		}
-	}
-	
-	private static boolean isPossible(String Z) {
-		int z = Integer.parseInt(Z);
-		return Integer.parseInt(X) <= z && z <= Integer.parseInt(Y);
+		input();
+		/* 처리 */
+		pro();
+		/* 출력 */
+		System.out.println(ans);
+		br.close();
 	}
 }
