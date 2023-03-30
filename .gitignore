@@ -122,4 +122,7 @@ $RECYCLE.BIN/
 # eclipse 
 eclipse/
 
+# sqldeveloper
+sqldeveloper/
+
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,java,windows

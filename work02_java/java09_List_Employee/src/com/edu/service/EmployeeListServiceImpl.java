@@ -2,6 +2,8 @@ package com.edu.service;
 
 import java.util.ArrayList;
 
+import com.edu.exception.DuplicateIDException;
+import com.edu.exception.RecordNotFoundException;
 import com.edu.vo.Employee;
 import com.edu.vo.Engineer;
 import com.edu.vo.Manager;
@@ -23,15 +25,16 @@ public class EmployeeListServiceImpl implements EmployeeListService {
 	}
 
 	@Override
-	public void addEmployee(Employee e) {
+	public void addEmployee(Employee e) throws DuplicateIDException {
 		// 추가하고자 하는 직원이 존재한다면...추가안함/ 없을 때 추가
 		boolean find = false;
 		for (Employee emp : list) {
 			if (emp.getEmpId().equals(e.getEmpId())) { // 추가하고자 하는 직원이 존재한다면
 				find = true;
-				System.out.println(e.getName() + " 님은 이미 직원으로 등록되어 있습니다.");
-
-				return; // 원래 호출한 지점으로 코드를 다시 되돌려놓는다.
+				
+				//사제폭탄을 터트림..
+				throw new DuplicateIDException("해당하는 직원은 이미 등록된 상태입니다!!");
+				
 
 			} // if
 		} // for
@@ -44,7 +47,7 @@ public class EmployeeListServiceImpl implements EmployeeListService {
 	}
 
 	@Override
-	public void deleteEmployee(String empId) {
+	public void deleteEmployee(String empId) throws RecordNotFoundException {
 		boolean find = false;
 		for (Employee emp : list) {
 			if (emp.getEmpId().equals(empId)) { // 삭제하려는 대상이 존재한다면
@@ -57,7 +60,8 @@ public class EmployeeListServiceImpl implements EmployeeListService {
 		} // for
 
 		if (find == false) {
-			System.out.println("삭제대상 직원을 찾을 수 없습니다.");
+			throw new RecordNotFoundException("삭제할 대상이 이미 탈퇴한 상태입니다!!");
+//			System.out.println("삭제대상 직원을 찾을 수 없습니다.");
 		}
 	}
 
