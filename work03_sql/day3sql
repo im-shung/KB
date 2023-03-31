@@ -1,0 +1,204 @@
+------------------- 단일행 서브쿼리 ------------------- 
+------------------- 1. WHERE절 사용되는 서브쿼리 -------------------
+-- CLARK의 급여보다 더 많은 급여를 받는 사원을 검색
+-- step1...sql파싱을 2번 하는 꼴 
+SELECT sal FROM emp WHERE ename = 'CLARK'; --2450
+SELECT ename, sal FROM emp WHERE sal > 2450;
+
+-- step1이 데이터베이스 성능을 떨어트리는 row level 
+-- 데이터베이스를 2번 접속 == SQL문을 2번 Parsing 한다고 말합니다.
+-- Oracle(DBMS) >> 계정(Database) >> Table(2차원구조의 데이터)
+-- Query는 Table에 Access ==> SQL Parsing 작업이다.
+-- 성능에 있어서 가장 기본적인 것이다 ! 
+
+-- step2...sql파싱을 1번 하고 테이블을 2번 호출하도록
+SELECT ename, sal 
+FROM emp 
+WHERE sal>(SELECT sal FROM emp WHERE ename = 'CLARK');
+-- 서브 쿼리는 테이블을 2번 호출하는 것이 문제...
+-- 이를 해결할 수 있는 '분석 함수'
+-- '분석 함수'가 나오게 된 이유 중 하나가 서브 쿼리의 성능 개선이다.
+-- 일단 여기까지만 알아두기 나중에 배우자.
+
+-- ename이 KING 인 사원과 같은 부서에서 일하는 사원을 검색...
+-- 질문! 물음표에 해당하는 것이 뭘까요?
+-- 답! KING의 부서
+-- SELECT절에서 사용/ WHERE 절
+SELECT ename, deptno
+FROM emp
+WHERE deptno=(SELECT deptno FROM emp WHERE ename = 'KING');
+
+-- WHERE절에서 왜 많이 쓰일까?
+
+-- job별 가장 작은 평균급여를 검색
+-- 물음표? 
+-- 1.업무별 평균급여를 구한다.
+-- 2.그 중에서 가장 작은 것
+
+------------------- 2. HAVING 절에 사용되는 서브쿼리 ------------------- 
+SELECT job, ROUND(AVG(sal)) "업무별 평균급여"
+FROM emp
+GROUP BY job
+HAVING ROUND(AVG(sal))= (SELECT MIN(ROUND(AVG(sal))) 
+FROM emp 
+GROUP BY job);
+
+-- job별 가장 작은 평균급여
+SELECT job, ROUND(AVG(sal))
+FROM emp
+GROUP BY job
+HAVING  ROUND(AVG(sal)) = (SELECT MIN(ROUND(AVG(sal)))
+FROM emp
+GROUP BY job);
+
+-- MIN(AVG()) := 그룹함수 중첩 OK.
+-- 안 되는 Vendor가 꽤 있다.
+-- 질문! 그러면 어떻게 해야 할 까?
+-- 답! 오름차순 정렬 후 1행을 택해서 .. 아무튼 성능이 좀 나빠짐 
+
+-- 부서별 최소급여 중에서 20번 부서의 최소급여보다 더 큰 최소급여를 검색
+-- ? = 20번 부서의 최소급여
+SELECT deptno, MIN(sal)
+FROM emp
+GROUP BY deptno
+HAVING MIN(sal) > (SELECT MIN(sal) FROM emp WHERE deptno=20);
+-- HAVING 절에 그룹함수가 쓰인다. 알아둘 점은 Oracle이 그룹함수 중첩을 제공한다는 것!
+
+-------------------  3. FROM 절에 사용되는 서브쿼리 ------------------- 
+-- 급여가 높은 3명을 검색
+-- step1...ORDER BY절이 가장 나중에 실행된다.
+SELECT ename, sal, rownum 
+FROM emp 
+WHERE rownum <= 3
+ORDER BY sal DESC;
+-- ORDER BY 절이 제일 마지막에 실행되기 때문에 원하는 대로 상위 3명의 결과값이 제대로 나오지 않는다.
+
+-- step2...ORDER BY절을 먼저 실행...(ORDER BY~~~)
+SELECT ename, sal, rownum 
+FROM (SELECT * FROM emp ORDER BY sal DESC) 
+WHERE rownum<=3;
+
+-- Sub Query를 쓰는 순간 적어도 2번 이상 테이블을 건드리게 된다.
+
+------------------ 다중행 서브쿼리 ------------------- 
+
+SELECT empno, ename
+FROM emp
+WHERE sal = (SELECT MIN(sal) FROM emp GROUP BY deptno); -- Multi Row는 =를 못 쓴다.
+-- '='는 단일행 연산자
+-- 'IN' 다중행 연산자를 사용합니다.
+-- ~~이거나 ~~이거나 ~~이거나 를 사용한다. => 'IN'
+
+SELECT empno, ename
+FROM emp
+WHERE sal IN (SELECT MIN(sal) FROM emp GROUP BY deptno); 
+
+-- 160P
+SELECT ename, sal, job
+FROM emp
+WHERE job != 'SALESMAN'
+AND
+sal>ANY(SELECT sal FROM emp WHERE job='SALESMAN');
+
+SELECT ename, sal, job
+FROM emp
+WHERE job != 'SALESMAN'
+AND
+sal>(SELECT MIN(sal) FROM emp WHERE job='SALESMAN')
+ORDER BY 2 DESC;
+
+-- 161P
+SELECT ename, sal, job, hiredate, deptno
+FROM emp
+WHERE job != 'SALESMAN'
+AND sal>All(SELECT sal FROM emp WHERE job='SALESMAN');
+
+SELECT ename, sal, job, hiredate, deptno
+FROM emp
+WHERE job != 'SALESMAN'
+AND sal>(SELECT MAX(sal) FROM emp WHERE job='SALESMAN')
+ORDER BY 2;
+
+-- SCOTT의 급여보다 더 많은 급여를 받는 사원을 검색
+-- 1
+SELECT ename, sal, job
+FROM emp
+WHERE ename != 'SCOTT' 
+AND sal>(SELECT sal FROM emp WHERE ename = 'SCOTT');
+-- 하나의 테이블을 2개의 관점으로 본다. ----> 테이블 Alias를 떠올릴 수 있다.
+
+-- 2. 테이블 Alias 사용
+SELECT *
+FROM emp a, (SELECT sal FROM emp WHERE ename = 'SCOTT') b
+WHERE a.sal>b.sal;
+
+
+------------------ 상호 연관 서브쿼리 ------------------- 
+-- 소속부서의 평균급여보다 많은 급여를 받는 사원 조회
+SELECT ename, sal, deptno, hiredate, job
+FROM emp E
+WHERE sal>(SELECT AVG(SAL) FROM emp WHERE deptno = E.deptno);
+
+-- 사원을 관리할 수 있는 사람의 평균급여보다 급여를 더 많이 받는 사원정보를 조회
+-- ? : 사원을 관리할 수 있는 사람의 평균급여
+-- 사원을 관리할 수 있는 사람 => mgr
+-- Outer의 사원을 참조
+SELECT empno, sal
+FROM emp E
+WHERE sal >(SELECT AVG(sal) FROM emp WHERE mgr = E.empno);
+
+
+------------------ EXISTS 연산자 ------------------- 
+-- 소속 사원이 존재하는 부서의 부서번호, 부서명 조회한다.
+-- step1. EXISTS
+SELECT deptno, dname
+FROM DEPT d
+WHERE EXISTS(SELECT 'A' 
+             FROM emp 
+             WHERE deptno = d.deptno);
+-- 실행순서
+-- 1.Outer 테이블의 컬럼을 참조
+-- 2.EXISTS Sub Query >> 만족하는 행이 1건이라도 존재하면 >> scan을 STOP! >> True를 반환
+    -- 성능에 아주아주 GOOD, BEST 최고야
+    -- 따라서 SELECT에서 뭘 가져오는지는 의미없기 때문에 'A'를 넣던가 1을 넣던가 상관없음~
+-- 3. Main Query 
+
+-- step2. DISTINCT
+SELECT DISTINCT dname, d.deptno
+FROM dept d, emp e
+WHERE e.deptno = e.deptno;
+-- DISTINCT는 내부적으로 성능을 떨어트림
+
+-- step3. IN
+SELECT dname, deptno
+FROM dept
+WHERE deptno IN(SELECT deptno FROM emp WHERE job='MANAGER');
+
+-- EXISTS와 IN의 실행 차이!
+-- IN 실행 순서
+-- 1.Sub Query 실행 
+    -- emp 테이블을 FULL SCAN
+    -- deptno와 emp테이블의 deptno를 일일이 비교...
+-- 2.Main Query
+
+------------------ 정리 ------------------- 
+-- 핵심1. 경우에 따라 다르다.
+    -- Sub Query를 실행하는 데이터가 대용량일 경우...IN이 아닌 EXISTS를 쓴다.
+-- 핵심2. 무조건 사용해야한다.
+    -- UNION ALL 보다 GROUPING SET
+    
+-- 분석함수가 어떤 메커니즘으로 돌아가는가?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
