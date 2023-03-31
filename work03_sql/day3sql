@@ -189,16 +189,106 @@ WHERE deptno IN(SELECT deptno FROM emp WHERE job='MANAGER');
     
 -- 분석함수가 어떤 메커니즘으로 돌아가는가?
 
+SELECT ename, sal, deptno
+    RANK() OVER(ORDER BY sal DESC) ALL_RANKING,
+    RANK() OVER(PARTITION BY deptno ORDER BY sal DESC) ALL_RANKING
+FROM emp;
 
+-- OVER 함수 안에 ORDER BY를 썼을 때 어떻게 다른 결과물이 나오는지
+    -- ORDER BY가 먼저 실행, 그 후에 OVER 함수 실행
+    -- group by와 다른점
+    -- 그룹별 하나만 나옴 
+    -- 그러나 PARTITION BY는 row별로 하나씩 다 나옴
 
+-- OVER 함수 안에 PARITION BY를 썼을 때 어떻게 다른 결과물이 나오는지
 
+--1. 테이블 생성
+--2. DML
+--    INSERT INTO
+--    DELETE FROM
+--    UPDATE SET
+--3. TRANSACTION
+--4. CTAS 문법 ---> 대용량 샘플데이타 로드와 동시에 테이블 생성
+--5. 제약조건 추가 / 제약조건 이슈
 
+-- 테이블 생성하기
+-- 컬럼 레벨에서 PK추가
+CREATE TABLE MYDEPT (
+    no number(3) CONSTRANT PK_NO PRIMARY KEY,
+    dname varchar2(30) not null,
+    long varchar2(30));
 
+-- 테이블 생성하기2
+-- 테이블 레벨에서 PK추가
+CREATE TABLE CUSTOM(
+SSN NUMBER(7),
+CUST_NAME VARCHAR2(20),
+ADDRESS VARCHAR2(50),
+CONSTRAINT CUSTOM_PK PRIMARY KEY(SSN));
 
+-- 데이타 입력하기
+INSERT INTO custom (ssn, cust_name, address) VALUES(111, USER, 'Brandon');
+INSERT INTO custom (ssn, cust_name, address) VALUES(222, 'JAMES', 'NY');
+INSERT INTO custom (ssn, cust_name, address) VALUES(333, 'JULIET', 'TEXAS');
 
+-- PK는 수정의 대상이 아닙니다.
+SELECT ssn, cust_name, address FROM custom;
 
+-- 데이터 수정하기
+UPDATE custom SET cust_name='이정재', address='신사동' WHERE ssn=111;
 
+-- 데이터 삭제하기 !!!
+/*
+차이점을 알고 정확히 구분하기
+DELETE
+    1) 조건에 해당하는 행만 삭제를 진행
+    2) 완벽히 삭제된건 아니다. rollback으로 원래대로 되돌릴수 있다.
 
+TRUNCATE :: DROP + CREATE
+    1) 모든 데이터를 다 삭제
+    2) rollback 안된다.
+    3) 테이블의 구조는 남긴다.
+    
+DROP
+    1) 모든 데이터가 없어지는것은 당연
+    2) 테이블의 구조도 없앤다.
+    
+*/
 
+DELETE custom WHERE ssn = 222;
+TRUNCATE TABLE custom;
+DESC custom;
 
+DROP TABLE custom;
+DESC custom;
 
+-- 공유데이터에 대한 ACCESS
+-- 1. 이승기가 UPDATE 문 실행 >> 임시 저장소에 데이터 저장 & LOCK을 겁니다. 
+-- 2. 아이유도 똑같은 데이터에 대해 UPDATE 문 실행 >> LOCK이 걸러져있어서 WAIT 상태가 된다.
+-- 충돌을 방지하기 위해 LOCK을 건다.
+-- 3. 이승기가 'COMMIT' 문 실행 >> LOCK이 사라지고 데이터가 OVERWRITE >> 아이유가 실행한 UPDATE 문이 실행
+DROP TABLE employee;
+DROP TABLE department;
+
+-- 1.CTAS를 이용해서 EMPLOYEE, DEPARTMENT 테이블 생성
+CREATE TABLE employee AS SELECT * FROM emp;
+CREATE TABLE department AS SELECT * FROM dept;
+-- 2.기본키 제약조건 추가
+ALTER TABLE employee ADD CONSTRAINT employee_empno_pk PRIMARY KEY(empno);
+ALTER TABLE department ADD CONSTRAINT department_deptno_pk PRIMARY KEY(deptno);
+-- 3.외래키 제약조건을 추가
+ALTER TABLE employee ADD CONSTRAINT employee_deptno_fk foreign key(deptno) REFERENCES department(deptno);
+-- 외래키를 설정하는 순간 부모-자식이 만들어진다.
+-- 자식을 가진 부모는 죽일 수 없다. 
+-- DEPARTMENT 테이블의 데이터 삭제 못함
+DELETE department WHERE deptno=20;
+/*
+해결책
+자식을 죽이고 부모가 죽는다
+기본키, 외래키 제약조건을 추가함. 이때 ON DELETE CASCADE 옵션을 함께 지정
+*/
+-- 4.ON DELETE CASCADE 옵션을 지정함
+ALTER TABLE employee ADD CONSTRAINT employee_deptno_fk foreign key(deptno)
+REFERENCES department(deptno) ON DELETE CASCADE;
+
+DELETE department WHERE deptno=20;
