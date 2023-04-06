@@ -1,4 +1,4 @@
-package com.jdbc.dto;
+package jdbc.dto;
 
 /*
 
@@ -17,8 +17,13 @@ public class Member {
 	public Member() {}
 	
 	public Member(int id, String name, String email, String phone) {
-		super();
 		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.phone = phone;
+	}
+	
+	public Member(String name, String email, String phone) {
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
