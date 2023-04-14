@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	function itemChange() {
+		var subway = document.querySelector("#subway");
+		// 선택한 지하철 노선이 있다면...  출력
+		if (subway.value != null) {
+			alert(subway.value+"호션 선택~~!!");
+		}
+	}
+</script>
+
+</head>
+<body>
+<form name="frm">
+	<select id="subway" onChange="itemChange()"> <!-- onChange: item 변경될 때마다 함수 호출 --> 
+		<option value="=======">======= 지하철 호선 =======</option>
+		<option value="1">1호선</option>
+		<option value="2">2호선</option>
+		<option value="3">3호선</option>
+		<option value="4">4호선</option>
+		<option value="5">5호선</option>
+		<option value="6">6호선</option>
+		<option value="7">7호선</option>
+	</select>
+</form>
+</body>
+</html>

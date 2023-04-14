@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	div {
+		float: left;
+		width: 25%;
+		background-color: green;
+	}
+	/* div태그의 클래스 속성의 값이 first */
+	div.first {
+		opacity: 0.1;
+	}
+	
+	div.second {
+		opacity: 0.3;
+	}
+	
+	div.third {
+		opacity: 0.5;
+	}
+</style>
+
+</head>
+<body>
+<h1>Transparent Box</h1>
+<p>When using the opacity property to add transparency to the background of an element, all of its child elements become transparent as well. This can make the text inside a fully transparent element hard to read:</p>
+
+<div class="first"><p>opacity 0.1</p></div>
+<div class="second"><p>opacity 0.3</p></div>
+<div class="third"><p>opacity 0.6</p></div>
+<div><p>opacity 1 (default)</p></div>
+</body>
+</html>

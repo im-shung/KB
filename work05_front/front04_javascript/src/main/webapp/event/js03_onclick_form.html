@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+	/*
+	 1. 폼에 입력된 닉네임 받아와서 alert창으로 출력
+	 2. 원래 폼은 리셋
+	 3. 마우스 포커스는 다음 hobby에 맞춰지도록
+	 */
+
+ 
+ 	function showName() {
+		let nickFrm = document.loginFrm.nick;
+		alert(nickFrm.value);
+		nickFrm.value = "";
+		document.loginFrm.hobby.focus();
+	}
+
+	function showHobby() {
+		let hobbyFrm = document.loginFrm.hobby;
+		alert(hobbyFrm.value);
+		hobbyFrm.value = "";
+		document.loginFrm.nick.focus();
+	}
+</script>
+</head>
+<body>
+	<form action="#" name="loginFrm">
+
+		닉네임 <input type="text" name="nick" id="nick"> <input
+			type="button" value="닉네임보기" onclick="showName()"> <br> <br>
+		취미<input type="text" name="hobby" id="hobby"> <input
+			type="button" value="취미보기" onclick="showHobby()">
+	</form>
+</body>
+</html>

@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+div {
+	  border: 1px solid black;
+	  margin: 100px 200px; /* 상하 | 좌우 */
+	  background-color: lightblue;
+	  padding: 50px;
+	}

@@ -1,0 +1,43 @@
+<!-- 
+JQuery에서 폼에 입력된 값 받아오거나 폼에 값 입력할 때...val() 함수 사용...js의 value와 동일
+JQuery에서 화면에 값을 출력하거나 화면의 값을 받아올 때...text(), html()...js의 innerHTML과 동일
+
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(function() {
+	// 1. a 태그의 속성 중에서 school이라는 단어가 포함된 선택자를 지정... 클릭함수 연결
+	//$('a[href *= school]').click(function() {
+	//$('a[href *= school]').bind('click', function() {
+	$('a[href *= school]').on('click', function() {
+		//confirm($(this).var() + "사이트로 이동할까요?"); // form 값이 아니므로 text()로 받아온다
+		return confirm($(this).text() + "사이트로 이동할까요?"); // 확인버튼 클릭시 이동하도록... return 붙임
+	});
+	
+});
+</script>
+</head>
+<body>
+<a href="http://www.jquery.com">JQuery</a>
+<a href="https://www.w3schools.com/">w3school</a>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

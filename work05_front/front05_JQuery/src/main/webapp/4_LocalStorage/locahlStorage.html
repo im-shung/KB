@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insert title here</title>
+<style>
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  $(function() {
+    $("#saveBtn").click(function() {
+		localStorage.setItem("key1", "안녕"); // 함수이용
+		localStorage.key2 = "HI";
+		localStorage["key3"] = "HELLO";
+	});
+    $("#delBtn").click(function() {
+    	localStorage.removeItem("key3"); // key에 해당하는 value가 없어진다.
+		
+	});
+    $("#delAllBtn").click(function() {
+    	localStorage.clear(); // 만료 기간이 없기 때문에, 직접 삭제하는 것이 중요하다.. 다 날라가기 때문에 조심해야 한다.
+	});
+    var text = '';
+    $("#showBtn").click(function() {
+    	text = localStorage.getItem("key1") + "," + localStorage.getItem("key2") + ","+ localStorage.getItem("key3") + ",";
+    	alert(text);
+	});
+  });
+</script>
+</head>
+<body>
+<button id = "saveBtn">저장</button>
+<button id = "delBtn">삭제</button>
+<button id = "delAllBtn">전체삭제</button>
+<button id = "showBtn">내용보기</button>
+</body>
+</html>

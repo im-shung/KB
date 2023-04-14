@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(function() {
+	// 1. 옵션 생성 버튼 클릭시...선택자/함수연결
+	// one 함수
+	$("#addOptionBtn").one('click', function() {
+		// 2. friends들에 해당하는 배열이 생성 + 그 item들이 select 태그의 자식 option 태그의 값으로...
+		var array = []
+		array.push('문동은');
+		array.push('박연진');
+		array.push('이사라');
+		array.push('손명호');
+		
+		$.each(array, function (index, item) {
+			$("#friend").append('<option value='+item+'>'+item+'</option>');
+		})
+		// $("#addOptionBtn").unbind();
+	}); 
+	/*
+	다음과 같은 함수들이 있을 때.. 다르게 동작하는 함수는? one
+	on('click'), click(), bind('click'), one('click')
+	*/
+	
+	// 3. 옵션 삭제 버튼을 클릭하면 생성된 option 태그를 삭제....
+	$("#deleteOptionBtn").on("click", function() {
+		$("#friend>option").remove();
+	})
+	
+});//ready
+</script>
+</head>
+<body>
+	<input type="button" value="옵션 생성" id="addOptionBtn">
+	<input type="button" value="옵션 삭제" id="deleteOptionBtn">
+	<select id="friend">	
+	</select>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
