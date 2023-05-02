@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Select 문에서 사용된 1. resultMap 2. Dynamic Query -->
+
+<mapper namespace="UserMapper07">
+	<!-- type에는 VO -->
+	<resultMap type="user" id="userSelectMap">
+		<!-- property는 setter의 name :: column에는 컬럼명 -->
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="age" column="age" />
+		<result property="grade" column="grade" />
+		<result property="regDate" column="reg_date" />
+	</resultMap>
+
+	<!-- 정적인 쿼리문 :: where절 조건이 달라질 때마다 계속 쿼리문이 생성됩니다. -->
+	<select id="sgetUserList01" parameterType="user"
+		resultMap="userSelectMap">
+		SELECT
+		user_id, user_name, password, age, grade, reg_date
+		FROM users
+		WHERE password = #{password}
+	</select>
+
+	<!-- 동적인 쿼리문 :: where절 조건이 달라져도 하나의 쿼리문으로 다 실행합니다. 
+		userName이 홍길동이고 age가 30살인 사람을 검색하는 쿼리... 
+		1) where user_name='aaa' and age='30' 
+		2) where user_name='aaa' 
+		3) where age='30' 
+		4) where 
+	-->
+	<select id="getUserList01" parameterType="user"
+		resultMap="userSelectMap">
+		SELECT
+		user_id, user_name, password, age, grade, reg_date
+		FROM users
+		<where> 
+			<if test="userName != null"> <!-- userName이 null이 아니라면... -->
+				user_name LIKE #{userName}
+			</if>
+			<if test="age != null"> <!-- age이 null이 아니라면... -->
+				OR age LIKE #{age} <!-- if문이 AND냐, OR냐?? -->
+			</if>
+		</where>
+		ORDER BY user_id DESC <!-- 가장 마지막에 나올 수 있는 건 "정렬" -->
+	</select>
+
+
+</mapper>

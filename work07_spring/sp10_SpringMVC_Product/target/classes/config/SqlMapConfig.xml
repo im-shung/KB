@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="config/dbconn.properties" />
+
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+
+	<!-- VO -->
+	<typeAliases>
+		<package name="com.service.spring.domain"/>
+	</typeAliases>
+
+	<!-- JDBC 구축 -->
+	<environments default="delvelop"> <!-- default와 id는 똑같은 내용이 와야 한다. -->
+		<environment id="delvelop">
+			<transactionManager type="JDBC" />
+			<dataSource type="UNPOOLED">
+				<property name="driver" value="${jdbc.oracle.driver}" />
+				<property name="url" value="${jdbc.oracle.url}" />
+				<property name="username" value="${jdbc.oracle.username}" />
+				<property name="password" value="${jdbc.oracle.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<!-- Mapping -->
+	<mappers>
+		<mapper resource="mapper/produuct-mapping.xml" /> <!-- 쿼리문을 여기에 작성할 것이다. -->
+	</mappers>
+</configuration>

@@ -129,3 +129,6 @@ sqldeveloper/
 apache-tomcat-9.0.73/
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,java,windows
+
+# util
+util/
